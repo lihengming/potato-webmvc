@@ -161,17 +161,4 @@ public class Dispatcher extends HttpServlet {
 			response.getWriter().write(JSONString);
 		}
 	}
-	
-	@SuppressWarnings("unused")
-	private Object method1(Class<?> clazz,String value){
-		switch (clazz.getSimpleName()) {
-		case "Integer":
-			
-			break;
-
-		default:
-			break;
-		}
-		return null;
-	}
 }
