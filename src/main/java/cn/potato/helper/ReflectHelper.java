@@ -1,46 +1,48 @@
 package cn.potato.helper;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.Modifier;
-import javassist.bytecode.CodeAttribute;
-import javassist.bytecode.LocalVariableAttribute;
-import javassist.bytecode.MethodInfo;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * 反射助手类
+ * 
  * @author 李恒名
  * @since 2016年3月7日
  */
 public class ReflectHelper {
 
-	private ReflectHelper() {}
-		
-	public static 	Map<Class<?>, String> getMethodParameterInfo(Class<?> clazz, String methodName)
-			throws Exception {
-		Map<Class<?>, String> paramInfoMap = new HashMap<Class<?>, String>();
-
-		ClassPool classPool = ClassPool.getDefault();
-		CtClass ctClass = classPool.get(clazz.getName());
-		CtMethod ctMethod = ctClass.getDeclaredMethod(methodName);
-
-		MethodInfo methodInfo = ctMethod.getMethodInfo();
-		CodeAttribute codeAttribute = methodInfo.getCodeAttribute();
-		LocalVariableAttribute attr = (LocalVariableAttribute) codeAttribute
-				.getAttribute(LocalVariableAttribute.tag);
-	
-		CtClass[] parameterTypes = ctMethod.getParameterTypes();
-		int pos = Modifier.isStatic(ctMethod.getModifiers()) ? 0 : 1;
-		for (int i = 0; i < parameterTypes.length; i++) {
-			paramInfoMap.put(Class.forName(parameterTypes[i].getName()),
-					attr.variableName(i + pos));
-		}
-		
-		return paramInfoMap;
+	private ReflectHelper() {
 	}
-	
+
+	public static Object changeStringToObject(Class<?> type, String value) {
+		Object object = null;
+		if ((type == Byte.TYPE) || (type == Byte.class)) {
+			object = Byte.valueOf(Byte.parseByte(value));
+		} else if ((type == Short.TYPE) || (type == Short.class)) {
+			object = Short.valueOf(Short.parseShort(value));
+		} else if ((type == Integer.TYPE) || (type == Integer.class)) {
+			object = Integer.valueOf(Integer.parseInt(value));
+		} else if ((type == Long.TYPE) || (type == Long.class)) {
+			object = Long.valueOf(Long.parseLong(value));
+		} else if ((type == Double.TYPE) || (type == Double.class)) {
+			object = Double.valueOf(Double.parseDouble(value));
+		} else if ((type == Float.TYPE) || (type == Float.class)) {
+			object = Float.valueOf(Float.parseFloat(value));
+		} else if ((type == Boolean.TYPE) || (type == Boolean.class)) {
+			object = Boolean.valueOf(Boolean.parseBoolean(value));
+		} else if (type == Date.class) {
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			try {
+				object = dateFormat.parse(value);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		} else if (type == String.class) {
+			object = value;
+		}
+		return object;
+	}
+
 }
