@@ -7,14 +7,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 访问路径与控制器对象的映射关系持有者
  * @author 李恒名
  * @since 2016年3月4日
  */
 public class MappingHolder{
+	private static final Logger log = LoggerFactory.getLogger(MappingHolder.class);
 	private static final String FILE_SUFFIX = "Controller.class";//要扫描的文件后缀
-	
 	private static String baseFilePath;//扫描文件的基础路径
 	private static String basePackage;//要扫描的包
 	private static List<String> ControllerClassNameList;
@@ -30,6 +33,8 @@ public class MappingHolder{
 	}
 
 	private static void initMapping() {
+		log.info("Initialize controller mapping begin.");
+		log.info("Controller basePackage: "+basePackage);
 		mapping = new HashMap<>();
 		ControllerClassNameList = new ArrayList<>() ;
 		String basePath = basePackage.replaceAll("\\.", "/");
@@ -45,7 +50,9 @@ public class MappingHolder{
 						+ className.substring(className.lastIndexOf(".") + 1,
 								className.lastIndexOf("Controller")).toLowerCase();
 				mapping.put(requestPath, clazz.newInstance());
+				log.info("Add in mapping: ["+requestPath+" -> "+clazz.getName()+"]");
 			}
+			log.info("Initialize controller mapping finish.");
 		} catch (Exception e) {
 			throw new RuntimeException("[控制器路径映射,初始化失败!]->"+e.getMessage());
 		}

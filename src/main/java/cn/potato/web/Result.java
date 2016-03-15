@@ -12,21 +12,22 @@ public class Result {
 	private String viewName;
 	private Map<String,Object> model = new HashMap<String, Object>();
 	
-	public void addData(String key,String value){
+	public Result addData(String key,Object value){
 		model.put(key, value);
+		return this;
 	}
 
 	public String getViewName() {
 		return viewName;
 	}
 
-	public void setViewName(String viewName) {
+	public Result setViewName(String viewName) {
 		this.viewName = viewName;
+		return this;
 	}
 
-	public Map<String, Object> getModel() {
+    Map<String, Object> getModel() {
 		return model;
 	}
-	
 	
 }
