@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.potato.helper.ReflectHelper;
+import cn.potato.helper.Converter;
 
 public class HandlerMethodArgsBuilder {
 	private Map<String, Object> requestParamInfo;
@@ -99,7 +99,7 @@ public class HandlerMethodArgsBuilder {
 					Object param = requestParamInfo.get(key);
 					if ((param instanceof String[])) {
 						String[] value = (String[]) param;
-						object = ReflectHelper.changeStringToObject(clazz,
+						object = Converter.convertStringToObject(clazz,
 								value[0]);
 					} else if ((param instanceof Map)) {
 						@SuppressWarnings("unchecked")
@@ -116,7 +116,7 @@ public class HandlerMethodArgsBuilder {
 								PropertyDescriptor pd = new PropertyDescriptor(
 										field.getName(), object.getClass());
 								pd.getWriteMethod().invoke(object,
-										new Object[] { ReflectHelper.changeStringToObject(pd.getPropertyType(),
+										new Object[] { Converter.convertStringToObject(pd.getPropertyType(),
 										((String[]) map.get(name))[0]) });
 							}
 						}
