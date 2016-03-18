@@ -87,21 +87,21 @@ public class Dispatcher extends HttpServlet {
 		//执行拦截器列表(正序)Before方法
 		for (Interceptor interceptor : interceptors) {
 			interceptor.before(request,response,handlerMethod);
-			log.info("Interceptor: invoke "+interceptor.getClass().getName()+".before()");
+			log.debug("Interceptor: invoke "+interceptor.getClass().getName()+".before()");
 		}
 		
 		//构造HandlerMethod的参数
 		Object[] args = new HandlerMethodArgsBuilder(request,handlerMethod,controller).build();
-		
-		log.info("Request: ["+request.getRequestURI()+"] --> ["+controller.getClass().getName()+"."+handlerMethod.getName()+"()]");
+		log.debug("##------------Service Begin--------------##");
+		log.debug("Request: ["+request.getRequestURI()+"] --> ["+controller.getClass().getName()+"."+handlerMethod.getName()+"()]");
 		Object result = handlerMethod.invoke(controller, args);
-		log.info("Handle Finish!");
+		log.debug("Handle Finish!");
 		
 		Collections.reverse(interceptors);
 		//执行拦截器列表(倒序)After方法
 		for (Interceptor interceptor : interceptors) {
 			interceptor.after(request,response,result);
-			log.info("Interceptor: invoke "+interceptor.getClass().getName()+".after()");
+			log.debug("Interceptor: invoke "+interceptor.getClass().getName()+".after()");
 		}
 		
 		//渲染数据进行响应
@@ -175,7 +175,7 @@ public class Dispatcher extends HttpServlet {
 			}
 			String viewPath = DEFAULT_VIEW_PREFIX + result.getViewName() + DEFAULT_VIEW_SUFFIX;
 			request.getRequestDispatcher(viewPath).forward(request, response);
-			log.info("Response: [Type：PageView],[Path："+viewPath+"]");
+			log.debug("Response: [Type：PageView],[Path："+viewPath+"]");
 		} else {
 			String className = "com.alibaba.fastjson.JSON";
 			try {
@@ -184,10 +184,11 @@ public class Dispatcher extends HttpServlet {
 				throw new RuntimeException("返回JSON需要添加com.alibaba -> FastJson包的支持");
 			}
 			String JSONString = JSON.toJSONString(object);
-			response.setHeader("application/json", "UTF-8");
+			response.setContentType("application/json;charset=utf-8");
 			response.getWriter().write(JSONString);
-			log.info("Response: [Type：JSON],[Data："+JSONString+"]");
+			log.debug("Response: [Type：JSON],[Data："+JSONString+"]");
 		}
+		log.debug("##------------Service End--------------##");
 	}
 	
 }

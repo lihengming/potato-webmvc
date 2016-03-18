@@ -1,7 +1,5 @@
 package cn.potato.core;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.potato.helper.Converter;
+import cn.potato.helper.ConvertHelper;
 
 public class HandlerMethodArgsBuilder {
 	private Map<String, Object> requestParamInfo;
@@ -50,17 +48,16 @@ public class HandlerMethodArgsBuilder {
 		for (String key : keySet)
 			if (key.contains(".")) {
 				String[] fs = key.split("\\.");
-				Map<String, Object> object = new HashMap<>();
+				Map<String, Object> beanMap = new HashMap<>();
 				for (String subKey : keySet) {
 					if (subKey.startsWith(fs[0])) {
 						String[] subFs = subKey.split("\\.");
-						object.put(subFs[1],
-								(String[]) parameterMap.get(subKey));
+						beanMap.put(subFs[1],parameterMap.get(subKey)[0]);
 					}
 				}
-				requestParamInfo.put(fs[0], object);
+				requestParamInfo.put(fs[0], beanMap);
 			} else {
-				requestParamInfo.put(key, parameterMap.get(key));
+				requestParamInfo.put(key, parameterMap.get(key)[0]);
 			}
 	}
 
@@ -91,35 +88,18 @@ public class HandlerMethodArgsBuilder {
 	private void inject() {
 		args = new ArrayList<Object>();
 		Object object = null;
-		Set<Class<?>> keySet = methodParamInfo.keySet();
+		Set<Class<?>> paramTypeClasses = methodParamInfo.keySet();
 		try {
-			for (Class<?> clazz : keySet) {
+			for (Class<?> clazz : paramTypeClasses) {
 				String key = (String) methodParamInfo.get(clazz);
 				if (requestParamInfo.containsKey(key)) {
-					Object param = requestParamInfo.get(key);
-					if ((param instanceof String[])) {
-						String[] value = (String[]) param;
-						object = Converter.convertStringToObject(clazz,
-								value[0]);
-					} else if ((param instanceof Map)) {
+					Object value = requestParamInfo.get(key);
+					if ((value instanceof Map)) {//如果为Map型的转换为Bean
 						@SuppressWarnings("unchecked")
-						Map<String, Object> map = (Map<String, Object>) param;
-						object = clazz.newInstance();
-						for (String name : map.keySet()) {
-							Field field = null;
-							try {
-								field = object.getClass()
-										.getDeclaredField(name);
-							} catch (NoSuchFieldException | SecurityException localNoSuchFieldException) {
-							}
-							if (field != null) {
-								PropertyDescriptor pd = new PropertyDescriptor(
-										field.getName(), object.getClass());
-								pd.getWriteMethod().invoke(object,
-										new Object[] { Converter.convertStringToObject(pd.getPropertyType(),
-										((String[]) map.get(name))[0]) });
-							}
-						}
+						Map<String, Object> map = (Map<String, Object>) value;
+						object  = ConvertHelper.mapConvertToBean(map, clazz);
+					}else{
+						object = ConvertHelper.convert(value, clazz);
 					}
 				}
 				args.add(object);
