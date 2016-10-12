@@ -1,29 +1,20 @@
 package cn.potato.core;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javassist.ClassClassPath;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.Modifier;
+import cn.potato.helper.ConvertHelper;
+import javassist.*;
 import javassist.bytecode.CodeAttribute;
 import javassist.bytecode.LocalVariableAttribute;
 import javassist.bytecode.MethodInfo;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.potato.helper.ConvertHelper;
+import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
+import java.util.*;
 
+/**
+ * HandlerMethodArgsBuilder 通过反射实现控制器方法参数的注入，由于JDK 1.7 反射无法获取参数名称故采用 javassist。
+ */
 public class HandlerMethodArgsBuilder {
 	private Map<String, Object> requestParamInfo;
 	private Map<Class<?>, String> methodParamInfo;

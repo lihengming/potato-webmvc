@@ -1,2 +1,11 @@
-/target/
-/bin/
+*.iml
+*.classpath
+*.project
+*.mymetadata
+*.releaseBackup
+release.properties
+
+.idea/
+target/
+.setting/
+.settings/

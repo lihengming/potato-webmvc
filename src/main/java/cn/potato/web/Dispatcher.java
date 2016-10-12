@@ -1,5 +1,16 @@
 package cn.potato.web;
 
+import cn.potato.annotation.Intercept;
+import cn.potato.core.HandlerMethodArgsBuilder;
+import cn.potato.core.MappingHolder;
+import com.alibaba.fastjson.JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -7,22 +18,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import cn.potato.annotation.Intercept;
-import cn.potato.core.HandlerMethodArgsBuilder;
-import cn.potato.core.MappingHolder;
-
-import com.alibaba.fastjson.JSON;
-
 /**
- * 分配器
+ * 请求调度器
  * 通过请求地址，分发请求到对应的控制器。
  * @author 李恒名
  * @since 2016年3月4日

@@ -1,12 +1,11 @@
 package cn.potato.web;
 
-import java.lang.reflect.Method;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
 
 /**
- * 类说明
+ * 拦截器接口
  * @author 李恒名
  * @since 2016年3月4日
  */
