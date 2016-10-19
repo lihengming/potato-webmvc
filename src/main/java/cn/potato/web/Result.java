@@ -29,5 +29,9 @@ public class Result {
     Map<String, Object> getModel() {
 		return model;
 	}
+
+	public static Result instance(){
+		return new Result();
+	}
 	
 }

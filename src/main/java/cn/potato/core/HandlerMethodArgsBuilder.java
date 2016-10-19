@@ -78,11 +78,11 @@ public class HandlerMethodArgsBuilder {
 
 	private void inject() {
 		args = new ArrayList<Object>();
-		Object object = null;
 		Set<Class<?>> paramTypeClasses = methodParamInfo.keySet();
 		try {
 			for (Class<?> clazz : paramTypeClasses) {
 				String key = (String) methodParamInfo.get(clazz);
+				Object object;
 				if (requestParamInfo.containsKey(key)) {
 					Object value = requestParamInfo.get(key);
 					if ((value instanceof Map)) {//如果为Map型的转换为Bean
@@ -92,6 +92,8 @@ public class HandlerMethodArgsBuilder {
 					}else{
 						object = ConvertHelper.convert(value, clazz);
 					}
+				}else{
+					object = clazz.newInstance();
 				}
 				args.add(object);
 			}
