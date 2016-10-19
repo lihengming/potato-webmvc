@@ -1,6 +1,6 @@
 package cn.potato.web;
 
-import cn.potato.annotation.Intercept;
+import cn.potato.annotation.EnableIntercept;
 import cn.potato.core.HandlerMethodArgsBuilder;
 import cn.potato.core.MappingHolder;
 import com.alibaba.fastjson.JSON;
@@ -25,17 +25,23 @@ import java.util.Map;
  * @since 2016年3月4日
  */
 public class Dispatcher extends HttpServlet {
-	private static final long serialVersionUID = -1217007459141119979L;
 	private static final Logger log = LoggerFactory.getLogger(Dispatcher.class);
 	private static final String DEFAULT_CONTROLLER_METHOD = "index";
-	private static final String DEFAULT_VIEW_PREFIX = "/jsp/";
+	private static final String DEFAULT_VIEW_PREFIX = "/WEB-INF/views/";
 	private static final String DEFAULT_VIEW_SUFFIX = ".jsp";
+
+	private String viewPrefix;
+	private String viewSuffix;
 	private Map<String, Object> mapping;
 	
 	//初始化Controller路径映射
 	@Override
 	public void init() {
 		String basePackage = getInitParameter("basePackage");
+		String viewPrefix = getInitParameter("viewPrefix");
+		String viewSuffix = getInitParameter("viewSuffix");
+		this.viewPrefix = viewPrefix != null ? viewPrefix : DEFAULT_VIEW_PREFIX;
+		this.viewSuffix = viewSuffix != null ? viewSuffix : DEFAULT_VIEW_SUFFIX;
 		this.mapping = MappingHolder.getMapping(basePackage);
 	}
 	
@@ -117,8 +123,7 @@ public class Dispatcher extends HttpServlet {
 	 */
 	private List<Interceptor> getInterceptors(Object controller)
 			throws InstantiationException, IllegalAccessException {
-		Intercept annotation = (Intercept) controller.getClass()
-				.getAnnotation(Intercept.class);
+		EnableIntercept annotation =  controller.getClass().getAnnotation(EnableIntercept.class);
 		List<Interceptor> interceptors = new ArrayList<>();
 
 		if (annotation != null) {
@@ -170,7 +175,7 @@ public class Dispatcher extends HttpServlet {
 			for (String key : model.keySet()) {
 				request.setAttribute(key, model.get(key));
 			}
-			String viewPath = DEFAULT_VIEW_PREFIX + result.getViewName() + DEFAULT_VIEW_SUFFIX;
+			String viewPath = viewPrefix + result.getViewName() + viewSuffix;
 			request.getRequestDispatcher(viewPath).forward(request, response);
 			log.debug("Response: [Type：PageView],[Path："+viewPath+"]");
 		} else {
