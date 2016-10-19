@@ -89,6 +89,7 @@ http://localhost/home
 
 ## 完整的使用
 - 构造REST API 以User服务为例
+
 1.创建Model
 ```java
 public class User {
@@ -125,8 +126,8 @@ public class UserController {
 }
 
 ```
-3. 使用AJAX调用API
-```
+3.使用AJAX调用API
+```javascript
    function add(){
         var url = '/user/add';
         var data = {
@@ -148,6 +149,48 @@ public class UserController {
     add();//console out：true
     query();//console out：Object {age: 24, id: 1, username: "potato"}
 
+```
+
+- 使用拦截器做统一的处理
+
+1.创建拦截器Class并实现Interceptor接口
+```java
+package example.web.interceptor;
+/**
+ * 示例拦截器，统计方法执行时间
+ */
+public class ExampleInterceptor implements Interceptor {
+    private final ThreadLocal<Long> threadLocal = new ThreadLocal<Long>();
+
+    public void before(HttpServletRequest request, HttpServletResponse response, Method handleMethod) {
+        System.out.println("执行方法之前，方法名称：" + handleMethod.getName());
+        threadLocal.set(System.currentTimeMillis());
+    }
+
+    public void after(HttpServletRequest request, HttpServletResponse response, Object result) {
+        long time = System.currentTimeMillis() - threadLocal.get();
+        System.out.println("方法执行之后，返回Result：" + result + ",耗时" + time + "毫秒");
+    }
+}
+```
+2.在Controller使用@EnableIntercept注解启动拦截器
+```java
+@EnableIntercept(classes=ExampleInterceptor.class)
+public class UserController {}
+```
+3.测试
+请求：[http://localhost/user/list](http://localhost/user/list)
+查看控制台输出：
+```shell
+执行方法之前，方法名称：list
+14:13:43.951 [http-bio-80-exec-9] DEBUG cn.potato.web.Dispatcher - Interceptor: invoke example.web.interceptor.ExampleInterceptor.before()
+14:13:43.952 [http-bio-80-exec-9] DEBUG cn.potato.web.Dispatcher - ##------------Service Begin--------------##
+14:13:43.952 [http-bio-80-exec-9] DEBUG cn.potato.web.Dispatcher - Request: [/user/list] --> [example.web.controller.UserController.list()]
+14:13:43.952 [http-bio-80-exec-9] DEBUG cn.potato.web.Dispatcher - Handle Finish!
+方法执行之后，返回Result：[1=example.model.User@6e3114f5],耗时1毫秒
+14:13:43.952 [http-bio-80-exec-9] DEBUG cn.potato.web.Dispatcher - Interceptor: invoke example.web.interceptor.ExampleInterceptor.after()
+14:13:43.952 [http-bio-80-exec-9] DEBUG cn.potato.web.Dispatcher - Response: [Type：JSON],[Data：[{"key":1,"value":{"age":24,"id":1,"username":"potato"}}]]
+14:13:43.952 [http-bio-80-exec-9] DEBUG cn.potato.web.Dispatcher - ##------------Service End--------------##
 ```
 ## 使用建议
 本框架仅限于娱乐，因为它可能只是一个简简单单的玩具轮子，并且随时可能会爆胎，所以并不建议你使用它上路~。
