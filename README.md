@@ -88,7 +88,7 @@ Reference:WEB-INF/views/home.jsp
 http://localhost/home
 
 ## 完整的使用
-- 构造REST API 以User服务为例
+- 使用JSON响应支持构造REST API ，以User服务为例
 
 1.创建Model
 ```java
@@ -179,6 +179,7 @@ public class ExampleInterceptor implements Interceptor {
 public class UserController {}
 ```
 3.测试
+
 请求：[http://localhost/user/list](http://localhost/user/list)
 查看控制台输出：
 ```shell
