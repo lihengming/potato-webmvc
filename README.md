@@ -6,7 +6,7 @@ Potato WebMVC 是用Java实现的一个简单的MVC框架，由于其简单性�
 3. 拦截器
 4. JSP View 、JSON响应支持
 
-## 如何快速使用？
+## 如何使用？
 
 1.引入Maven 依赖
 ```xml
@@ -85,9 +85,9 @@ Reference:WEB-INF/views/home.jsp
 ```
 
 5.部署后访问它
-http://localhost/home
-
-## 完整的使用
+请求：[http://localhost/home](http://localhost/home)
+响应：This Home Page,Hello Potato!
+## 使用其他特性
 - 使用JSON响应支持构造REST API ，以User服务为例
 
 1.创建Model
@@ -151,7 +151,7 @@ public class UserController {
 
 ```
 
-- 使用拦截器做统一的处理
+- 使用拦截器支持做统一的处理
 
 1.创建拦截器Class并实现Interceptor接口
 ```java
