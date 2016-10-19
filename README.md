@@ -6,7 +6,7 @@ Potato WebMVC 是用Java实现的一个简单的MVC框架，由于其简单性�
 3. 拦截器
 4. JSP View 、JSON响应支持
 
-## 如何使用？
+## 如何快速使用？
 
 1.引入Maven 依赖
 ```xml
@@ -87,5 +87,67 @@ Reference:WEB-INF/views/home.jsp
 5.部署后访问它
 http://localhost/home
 
+## 完整的使用
+- 构造REST API 以User服务为例
+1.创建Model
+```java
+public class User {
+    private Long id;
+    private String username;
+    private Integer age;
+    //省略getter、setter方法
+}
+```
+2.创建UserController
+```java
+package example.web.controller;
+public class UserController {
+
+    //模拟持久层
+    private Map<Long, User> repository = new HashMap<Long, User>();
+
+    //映射路径add() - > ‘/user/add’
+    public boolean add(User user) {
+        repository.put(user.getId(), user);
+        return true;
+    }
+
+    //映射路径add() - > ‘/user/list’
+    public Collection list() {
+        return  repository.entrySet();
+    }
+
+    //映射路径add() - > ‘/user/find’
+    public User find(Long id) {
+        return repository.get(id);
+    }
+
+}
+
+```
+3. 使用AJAX调用API
+```
+   function add(){
+        var url = '/user/add';
+        var data = {
+            'user.id': 1,
+            'user.username': 'potato',
+            'user.age': '24'
+        };
+        $.post(url, data).done(function (success) {
+            console.log(success);
+
+        });
+    }
+    function query(){
+        var url = '/user/find';
+        $.get(url, {id: 1}).done(function (result) {
+            console.log(result);
+        });
+    }
+    add();//console out：true
+    query();//console out：Object {age: 24, id: 1, username: "potato"}
+
+```
 ## 使用建议
 本框架仅限于娱乐，因为它可能只是一个简简单单的玩具轮子，并且随时可能会爆胎，所以并不建议你使用它上路~。
