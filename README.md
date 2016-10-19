@@ -1,11 +1,14 @@
 ## 简介
 Potato WebMVC 是用Java实现的一个简单的MVC框架，由于其简单性所以只俱备基本MVC框架的功能和以下特性~
+
 1. 约定优于配置，实现最简甚至零配置
 2. Model表单、请求参数、依赖对象自动构造注入所请求的HandleMethod
 3. 拦截器
 4. JSP View 、JSON响应支持
+
 ## 如何使用？
-1. 引入Maven 依赖
+
+1.引入Maven 依赖
 ```xml
  <dependency>
     <groupId>com.github.lihengming</groupId>
@@ -20,7 +23,8 @@ Potato WebMVC 是用Java实现的一个简单的MVC框架，由于其简单性�
     <version>1.1.7</version>
 </dependency>
 ```
-2. 配置你的web.xml
+
+2.配置你的web.xml
 ```xml
 <servlet>
     <servlet-name>DispatcherServlet</servlet-name>
@@ -48,7 +52,8 @@ Potato WebMVC 是用Java实现的一个简单的MVC框架，由于其简单性�
     <url-pattern>/</url-pattern>
   </servlet-mapping>
 ```
-3. 创建Controller
+
+3.创建Controller
 ```java
 package example.web.controller;
 
@@ -62,7 +67,8 @@ public class HomeController {
     }
 }
 ```
-4. 创建JSP
+
+4.创建JSP
 Reference:WEB-INF/views/home.jsp
 ```java
   <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -77,7 +83,8 @@ Reference:WEB-INF/views/home.jsp
   </html>
 
 ```
-5. 部署后访问它
+
+5.部署后访问它
 http://localhost/home
 
 ## 使用建议
